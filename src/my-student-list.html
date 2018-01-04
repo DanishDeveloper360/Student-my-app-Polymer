@@ -1,0 +1,123 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-spinner/paper-spinner-lite.html">
+<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+
+
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="my-student-list">
+    <template>
+        <style include="shared-styles">
+        </style>
+
+        <style>
+
+            paper-fab {
+                position: fixed;
+                bottom: 1em;
+                right: 1em;
+            }
+
+
+        </style>
+
+
+        <!-- GET :: All 'Students' data from Firebase DB-->
+        <firebase-query
+                id="query"
+                app-name="jcrud"
+                path="/students/[[user.uid]]"
+                data="{{liveStudentRecords}}">
+        </firebase-query>
+
+
+        <!-- indexeddb:: Caching Firebase 'Students' data for offline access -->
+
+        <app-indexeddb-mirror
+                session="[[user.uid]]"
+                key="notes"
+                data="{{liveStudentRecords}}"
+                persisted-data="{{persistedStudentRecords}}">
+        </app-indexeddb-mirror>
+
+
+        <firebase-document
+                id="document"
+                app-name="jcrud"
+                path="{{studentFbPath}}"
+                data="{{studentFbData}}">
+        </firebase-document>
+
+
+
+
+
+
+
+        <!-- Create Student -->
+
+        <a href="/#/student/create">Create</a>
+        <paper-fab
+                icon="add"
+                on-tap="createStudent"
+                disabled="[[!online]]"
+                aria-label="Add note">
+        </paper-fab>
+
+
+
+        <!-- List :: All Students -->
+
+        <template is="dom-repeat" items="[[persistedStudentRecords]]" as="student" id="studentListId">
+
+            <div class="card">
+                <h1>[[student.name]]</h1>
+                <p>[[student.age]]</p>
+                <p>[[student.mobile]]</p>
+
+                <p>[[student.$key]]</p>
+
+                <p> <a href="/#/student/edit/[[student.$key]]"> Edit </a> </p>
+                <p> <button on-tap="deleteStudentRecord"> Delete </button> </p>
+            </div>
+
+        </template>
+
+
+
+
+    </template>
+
+    <script>
+        Polymer({
+            is: 'my-student-list',
+
+            createStudent: function(){
+
+                this.set("proute.path", "/create");
+
+            },
+            deleteStudentRecord: function(e){
+
+                var studentRecord = e.model.student;
+
+                //console.log(studentRecord);
+
+                this.studentFbPath = '/students/'+ this.user.uid +'/'+studentRecord.$key;
+
+                //console.log(this.studentFbPath);
+
+                this.$.document.destroy();
+
+
+            }
+
+
+        });
+    </script>
+</dom-module>

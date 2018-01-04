@@ -1,0 +1,82 @@
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/polymerfire/polymerfire.html">
+<link rel="import" href="../bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
+<link rel="import" href="../bower_components/iron-meta/iron-meta.html">
+<link rel="import" href="../bower_components/iron-signals/iron-signals.html">
+
+
+<link rel="import" href="common-behavior.html">
+
+<link rel="import" href="my-icons.html">
+<link rel="import" href="my-app-auth.html">
+<link rel="import" href="my-app-content.html">
+
+
+<dom-module id="my-app">
+    <template>
+        <!--<style include="shared-styles"></style>-->
+
+        <style>
+
+        </style>
+
+
+        <!-- Global: Static Variable -->
+        <iron-meta key="APP_TITLE" value="J-CRUD"></iron-meta>
+
+        <!-- '_handleUserSignOut' will be triggered whenever ---this.fire('iron-signal', {name: 'signoutsignal'}); called -->
+        <iron-signals on-iron-signal-signoutsignal="_handleUserSignOut"></iron-signals>
+
+
+
+        <!-- Firebase App -->
+        <firebase-app
+                name="std_crud"
+                api-key="TEST"
+                auth-domain="TEST"
+                database-url="https://test.firebaseio.com">
+        </firebase-app>
+
+        <my-app-auth id="myAppAuthId" is-user-signed-in="{{isUserSignedIn}}" user-obj="{{user}}"></my-app-auth>
+
+
+
+        <!-- APP UI -->
+        <my-app-content></my-app-content>
+
+
+
+    </template>
+
+    <script>
+        Polymer({
+            is: 'my-app',
+            behaviors: [Polymer.CommonUtilBehavior],
+            observers: ['_userObjChanged(user)'],
+            properties: {},
+            _handleUserSignOut: function(){
+                //console.log("_signOut");
+
+                this.$.myAppAuthId.signOut();
+            },
+            _userObjChanged: function(user){
+
+                if(user){
+                    this.fire('iron-signal', {name: 'usersignal', data: user});
+                }
+            }
+        });
+    </script>
+</dom-module>

@@ -1,0 +1,82 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+
+<link rel="import" href="my-student-list.html">
+<link rel="import" href="my-student-form.html">
+
+
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="my-student">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+
+                padding: 10px;
+            }
+        </style>
+
+
+        <app-route
+                route="{{route}}"
+                pattern="/:page"
+                data="{{routeData}}"
+                tail="{{subroute}}"></app-route>
+
+
+
+        <!--<p>routeData.page: {{routeData.page}}</p>-->
+        <!--<p>subroute: {{subroute.path}}</p>-->
+
+        <!-- VIEW :: -->
+        <iron-pages
+                selected="[[routeData.page]]"
+                attr-for-selected="name"
+                fallback-selection="list"
+                role="main">
+
+            <my-student-list name="list"
+                             proute="{{route}}"
+                             route="{{subroute}}"
+                             user="{{user}}"></my-student-list>
+
+
+
+            <my-student-form name="create"
+                             user="{{user}}"
+                             proute="{{route}}"></my-student-form>
+
+
+            <my-student-form name="edit"
+                             route="{{subroute}}"
+                             proute="{{route}}"
+                             user="{{user}}"></my-student-form>
+
+
+
+        </iron-pages>
+
+
+    </template>
+
+    <script>
+        Polymer({
+            is: 'my-student',
+            properties: {
+
+
+            }
+        });
+    </script>
+</dom-module>

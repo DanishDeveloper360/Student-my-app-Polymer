@@ -1,0 +1,48 @@
+<script>
+  (function() {
+    'use strict';
+
+
+    Polymer.CommonUtilBehavior = {
+      __jsonPrint: function(obj){
+        //console.log(obj);
+
+        return JSON.stringify(obj);
+      }
+    };
+
+
+    Polymer.CommonAppBehavior = {
+      myFn: function(obj){
+        //console.log(obj);
+      }
+    };
+
+
+    Polymer.CommonBehavior = [
+      Polymer.CommonUtilBehavior,
+      Polymer.CommonAppBehavior
+    ];
+
+
+
+    Polymer.UserUtilBehavior = {
+      _signOut: function(){
+        this.fire('iron-signal', {name: 'signoutsignal'});
+      },
+      _handleUserSignal: function(e){
+        this.user = e.detail;
+        //console.log(this.user);
+
+      }
+    };
+
+
+
+    Polymer.UserBehavior = [
+      Polymer.UserUtilBehavior
+    ];
+
+
+  })();
+</script>

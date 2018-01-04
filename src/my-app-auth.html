@@ -1,0 +1,100 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+
+
+<dom-module id="my-app-auth">
+    <template>
+        <style>
+
+            :host{
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: var(--paper-purple-500);
+                transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                z-index: 1;
+                color: var(--paper-purple-50);
+
+                @apply(--layout);
+                @apply(--layout-center-center);
+            }
+
+            :host([is-user-signed-in]) {
+                opacity: 0;
+                pointer-events: none;
+            }
+
+        </style>
+
+
+
+        <!-- User Authentication :: Firebase Auth-->
+        <firebase-auth
+                id="fauth"
+                app-name="jcrud"
+                provider="google"
+                signed-in="{{isUserSignedIn}}"
+                user="{{userObj}}">
+        </firebase-auth>
+
+
+
+        <!--<p>isUserSignedIn ::  {{isUserSignedIn}}</p>-->
+        <!--<p>userObj :: {{__jsonPrint(userObj)}}</p>-->
+        <!--<p>displayName :: {{userObj.displayName}}</p>-->
+
+
+
+        <paper-button on-tap="signIn" disabled="[[disabled]]">
+
+            <iron-icon icon="account-circle"></iron-icon>
+
+            &nbsp;&nbsp; <span>Sign in with Google</span>
+
+        </paper-button>
+
+
+
+    </template>
+
+    <script>
+        Polymer({
+            is: 'my-app-auth',
+
+            properties: {
+                isUserSignedIn: {
+                    type: Boolean,
+                    notify: true,
+                    reflectToAttribute: true
+                },
+                userObj: {
+                    type: Object,
+                    notify: true
+                }
+            },
+
+            listeners: {
+                'signout': '_signOutBtnClicked'
+            },
+
+            signIn: function(){
+
+                //console.log("signIn");
+
+                this.$.fauth.signInWithPopup();
+
+            },
+            signOut: function() {
+                //console.log("signOut");
+                if (this.$.fauth) {
+                    this.$.fauth.signOut();
+                }
+            }
+
+        });
+    </script>
+</dom-module>
